@@ -1,9 +1,5 @@
 import pika
 import os
-import sys
-import json
-import tkinter as tk
-from tkinter import filedialog
 
 class MetaClass(type):
 
@@ -85,12 +81,10 @@ if __name__ == "__main__":
                                routingKey='image',
                                exchange='')
 
-    root = tk.Tk()
-    root.withdraw()
-    file_path = filedialog.askopenfilename()
-
-    image = Image(filename=file_path)
+    img_path = 'images/new_image.jpg'
+    image = Image(filename=img_path)
     data = image.get
+    os.remove(img_path)
 
     with RabbitMq(server) as rabbitmq:
         rabbitmq.publish(payload=data)
