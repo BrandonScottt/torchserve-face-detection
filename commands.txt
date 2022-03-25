@@ -1,0 +1,36 @@
+---To run rabbitmq management and pull
+docker run -d --name rabbit -p 15672:15672 -p 5672:5672 rabbitmq:3.9-management
+
+---To run postgres and pull
+docker run --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=fotoyu -e POSTGRES_DB=mydb -d postgres
+
+---check network
+docker network inspect <network name> #default bridge
+
+or
+
+docker inspect <container name> | findstr IPAddress
+
+---To run POST image API
+docker build . -t test-server
+docker run -t --name publish -p 3000:3000 test-server
+
+---To run consumer
+docker build . -t test-consume
+docker run -t --name consume test-consume
+
+
+---To build torchserve
+torch-model-archiver --model-name mymodel --version 1.0 --serialized-file mtcnn.pth --model-file export.py --handler my_handler.py --extra-files face_detection.py
+move *mar model_store
+
+---To start torchserve
+torchserve --start --ncs --model-store model_store --models mymodel=face_detect_model.mar
+
+---To run torch serve
+curl localhost:8080/predictions/mymodel -T img1.jpg
+
+---in docker
+>>>import requests
+>>>image_path = <image path>
+>>>result = requests.post("http://host.docker.internal:8080/predictions/mymodel" , files={'data': open(image_path, 'rb')})
