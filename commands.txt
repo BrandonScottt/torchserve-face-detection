@@ -4,6 +4,13 @@ docker run -d --name rabbit -p 15672:15672 -p 5672:5672 rabbitmq:3.9-management
 ---To run postgres and pull
 docker run --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=fotoyu -e POSTGRES_DB=mydb -d postgres
 
+---check db in docker
+1. docker exec postgres bash
+2. psql -U postgres
+3. \c <db name> #mydb
+4. \d #view list of relationship
+5. simple query to view tables (select* from <table name>)
+
 ---check network
 docker network inspect <network name> #default bridge
 
