@@ -28,7 +28,7 @@ docker run -t --name consume test-consume
 
 
 ---To build torchserve
-torch-model-archiver --model-name mymodel --version 1.0 --serialized-file mtcnn.pth --model-file export.py --handler my_handler.py --extra-files face_detection.py
+torch-model-archiver --model-name mymodel --version 1.0 --serialized-file mtcnn.pth --model-file model.py --handler my_handler.py --extra-files face_detection.py
 move *mar model_store
 
 ---To start torchserve
