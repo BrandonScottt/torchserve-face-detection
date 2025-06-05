@@ -3,11 +3,11 @@
 docker run --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=fotoyu -e POSTGRES_DB=mydb -d postgres
 
 ---check db in docker
-1. docker exec postgres bash
-2. psql -U postgres
-3. \c <db name> #mydb
-4. \d #view list of relationship
-5. simple query to view tables (select* from <table name>)
+docker exec postgres bash
+psql -U postgres
+\c <db name> #mydb
+\d #view list of relationship
+simple query to view tables (select* from <table name>)
 
 ---check network
 docker network inspect <network name> #default bridge
