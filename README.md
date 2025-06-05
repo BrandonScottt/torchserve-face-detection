@@ -1,1 +1,41 @@
 # torchserve-face-detection
+
+docker run --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=fotoyu -e POSTGRES_DB=mydb -d postgres
+
+---check db in docker
+1. docker exec postgres bash
+2. psql -U postgres
+3. \c <db name> #mydb
+4. \d #view list of relationship
+5. simple query to view tables (select* from <table name>)
+
+---check network
+docker network inspect <network name> #default bridge
+
+or
+
+docker inspect <container name> | findstr IPAddress
+
+---To run POST image API
+docker build . -t test-server
+docker run -t --name publish -p 3000:3000 test-server
+
+---To run consumer
+docker build . -t test-consume
+docker run -t --name consume test-consume
+
+
+---To build torchserve
+torch-model-archiver --model-name mymodel --version 1.0 --serialized-file mtcnn.pth --model-file model.py --handler my_handler.py --extra-files face_detection.py
+move *mar model_store
+
+---To start torchserve
+torchserve --start --ncs --model-store model_store --models mymodel=face_detect_model.mar
+
+---To run torch serve
+curl localhost:8080/predictions/mymodel -T img1.jpg
+
+---in docker
+>>>import requests
+>>>image_path = <image path>
+>>>result = requests.post("http://host.docker.internal:8080/predictions/mymodel" , files={'data': open(image_path, 'rb')})
