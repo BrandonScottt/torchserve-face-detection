@@ -36,6 +36,6 @@ torchserve --start --ncs --model-store model_store --models mymodel=face_detect_
 curl localhost:8080/predictions/mymodel -T img1.jpg
 
 ---in docker
->>>import requests
->>>image_path = <image path>
->>>result = requests.post("http://host.docker.internal:8080/predictions/mymodel" , files={'data': open(image_path, 'rb')})
+import requests
+image_path = <image path>
+result = requests.post("http://host.docker.internal:8080/predictions/mymodel" , files={'data': open(image_path, 'rb')})
