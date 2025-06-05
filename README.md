@@ -1,41 +1,58 @@
 # torchserve-face-detection
 
+This repository demonstrates deploying a face detection model using TorchServe, along with a PostgreSQL database and API services managed via Docker.
+
+---
+
+## PostgreSQL Setup with Docker
+
+Run PostgreSQL container:
+```bash
 docker run --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=fotoyu -e POSTGRES_DB=mydb -d postgres
+```
 
----check db in docker
-docker exec postgres bash
+##Check Database in Docker
+
+docker exec -it postgres bash
 psql -U postgres
-\c <db name> #mydb
-\d #view list of relationship
-simple query to view tables (select* from <table name>)
+\c mydb            # Connect to your database (replace <db name> with mydb)
+\d                 # List tables and relations
+SELECT * FROM <table_name>;  # Query data from a table
 
----check network
-docker network inspect <network name> #default bridge
+## Docker Network Inspection
+docker network inspect bridge
+docker inspect <container_name> | findstr IPAddress
 
-or
-
-docker inspect <container name> | findstr IPAddress
-
----To run POST image API
+## Running the Image POST API
 docker build . -t test-server
 docker run -t --name publish -p 3000:3000 test-server
 
----To run consumer
 docker build . -t test-consume
 docker run -t --name consume test-consume
 
+##TorchServe Model Packaging and Deployment
 
----To build torchserve
-torch-model-archiver --model-name mymodel --version 1.0 --serialized-file mtcnn.pth --model-file model.py --handler my_handler.py --extra-files face_detection.py
-move *mar model_store
+torch-model-archiver \
+  --model-name mymodel \
+  --version 1.0 \
+  --serialized-file mtcnn.pth \
+  --model-file model.py \
+  --handler my_handler.py \
+  --extra-files face_detection.py
 
----To start torchserve
 torchserve --start --ncs --model-store model_store --models mymodel=face_detect_model.mar
 
----To run torch serve
 curl localhost:8080/predictions/mymodel -T img1.jpg
 
----in docker
+## Using Python Requests (in docker)
 import requests
-image_path = <image path>
-result = requests.post("http://host.docker.internal:8080/predictions/mymodel" , files={'data': open(image_path, 'rb')})
+
+image_path = "<image_path>"
+result = requests.post(
+    "http://host.docker.internal:8080/predictions/mymodel",
+    files={'data': open(image_path, 'rb')}
+)
+
+print(result.json())
+
+
