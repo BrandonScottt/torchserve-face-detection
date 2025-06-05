@@ -24,14 +24,18 @@ docker network inspect bridge
 docker inspect <container_name> | findstr IPAddress
 
 ## Running the Image POST API
+
+### Build and run server container
 docker build . -t test-server
 docker run -t --name publish -p 3000:3000 test-server
 
+### Build and run consumer container:
 docker build . -t test-consume
 docker run -t --name consume test-consume
 
-##TorchServe Model Packaging and Deployment
+## TorchServe Model Packaging and Deployment
 
+### Build TorchServe .mar Model Archive
 torch-model-archiver \
   --model-name mymodel \
   --version 1.0 \
@@ -40,8 +44,10 @@ torch-model-archiver \
   --handler my_handler.py \
   --extra-files face_detection.py
 
+### Start TorchServe with the Model
 torchserve --start --ncs --model-store model_store --models mymodel=face_detect_model.mar
 
+### Run Inference on TorchServe
 curl localhost:8080/predictions/mymodel -T img1.jpg
 
 ## Using Python Requests (in docker)
